@@ -20,6 +20,21 @@ public class Device {
         this.creationTime = creationTime;
     }
 
+    private void validate(String name, String brand, DeviceState state, LocalDateTime creationTime) {
 
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Device name cannot be empty.");
+        }
+        if (brand == null || brand.isBlank()) {
+            throw new IllegalArgumentException("Device brand cannot be empty.");
+        }
+        if (state == null) {
+            throw new IllegalArgumentException("Device state cannot be null.");
+        }
+        if (creationTime == null) {
+            throw new IllegalArgumentException("Creation time cannot be null.");
+        }
+
+    }
 
 }
