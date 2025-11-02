@@ -17,7 +17,7 @@ public class Device {
         this.name = name;
         this.brand = brand;
         this.state = DeviceState.AVAIABLE;
-        this.creationTime = creationTime;
+        this.creationTime = LocalDateTime.now();
         validate(name, brand, state, creationTime);
     }
 
