@@ -13,12 +13,22 @@ public class Device {
     private final LocalDateTime creationTime;
 
 
-    public Device(long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
+    public Device(String name, String brand, LocalDateTime creationTime) {
+        this.name = name;
+        this.brand = brand;
+        this.state = DeviceState.AVAIABLE;
+        this.creationTime = creationTime;
+        validate(name, brand, state, creationTime);
+    }
+
+
+    public Device(Long id, String name, String brand, DeviceState state, LocalDateTime creationTime) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.state = state;
         this.creationTime = creationTime;
+        validate(name, brand, state, creationTime);
     }
 
     private void validate(String name, String brand, DeviceState state, LocalDateTime creationTime) {
