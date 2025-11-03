@@ -3,11 +3,13 @@ package com.devices.api.infra.persistence.jpa;
 import com.devices.api.domain.entity.Device;
 import com.devices.api.gateway.DeviceRepositoryGateway;
 import com.devices.api.infra.mapper.DeviceMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
 public class DeviceRepositoryJpaGateway implements DeviceRepositoryGateway {
 
     private final DeviceRepository deviceRepository;
@@ -28,16 +30,22 @@ public class DeviceRepositoryJpaGateway implements DeviceRepositoryGateway {
 
     @Override
     public Device save(Device device) {
-        return null;
+        DeviceEntity deviceEntity = this.mapper.mapFromDomainToEntity(device);
+
+        DeviceEntity saved = this.deviceRepository.save(deviceEntity);
+
+        return this.mapper.mapFromEntityToDomain(saved);
+
     }
 
     @Override
     public Optional<Device> findById(Long id) {
-        return Optional.empty();
+        return deviceRepository.findById(id)
+                .map(mapper::mapFromEntityToDomain);
     }
 
     @Override
     public void delete(Long id) {
-
+        deviceRepository.deleteById(id);
     }
 }
