@@ -6,8 +6,14 @@ import com.devices.api.infra.persistence.jpa.DeviceEntity;
 public class DeviceMapper {
 
     private DeviceMapper(){}
-    public static Device mapFromEntityToDomain(DeviceEntity deviceEntity){
-
-
+    public Device mapFromEntityToDomain(DeviceEntity deviceEntity){
+        if (deviceEntity == null) throw new RuntimeException("Device entity is null here");
+        return new Device(
+                deviceEntity.getId(),
+                deviceEntity.getName(),
+                deviceEntity.getBrand(),
+                deviceEntity.getState(),
+                deviceEntity.getCreationTime()
+        );
     }
 }
