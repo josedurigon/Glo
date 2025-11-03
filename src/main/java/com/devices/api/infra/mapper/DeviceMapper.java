@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeviceMapper {
 
-    private DeviceMapper(){}
+    public DeviceMapper(){}
     public Device mapFromEntityToDomain(DeviceEntity deviceEntity){
         if (deviceEntity == null) throw new RuntimeException("Device entity is null here");
         return new Device(
