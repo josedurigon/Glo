@@ -58,5 +58,11 @@ public class DeviceController {
         return ResponseEntity.ok(this.service.fetchDevicesByState(state));
     }
 
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteDeviceById(@PathVariable Long id){
+        this.service.deleteDeviceById(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

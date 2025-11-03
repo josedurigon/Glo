@@ -5,7 +5,10 @@ import com.devices.api.domain.entity.Device;
 import com.devices.api.domain.enun.DeviceState;
 import com.devices.api.infra.dto.DeviceRequestDto;
 import com.devices.api.infra.dto.DeviceResponseDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -57,6 +60,10 @@ public class DeviceService {
             throw new IllegalArgumentException("Invalid device state: " + stateString);
         }
         return this.deviceUseCase.fetchDevicesByState(state);
-
     }
+
+    public void deleteDeviceById(Long id){
+        this.deviceUseCase.deleteDevice(id);
+    }
+
 }

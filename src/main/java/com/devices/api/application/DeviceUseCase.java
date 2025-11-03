@@ -86,4 +86,14 @@ public class DeviceUseCase {
                 .collect(Collectors.toList());
     }
 
+    public void deleteDevice(Long id){
+        Device device = this.deviceRepositoryGateway.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cannot find device with id "+ id));
+
+        device.makeSureDeviceCanBeDeleted();
+
+        this.deviceRepositoryGateway.delete(device.getId());
+
+    }
+
 }
