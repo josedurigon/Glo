@@ -9,6 +9,8 @@ import com.devices.api.infra.service.DeviceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/device")
 public class DeviceController {
@@ -25,9 +27,25 @@ public class DeviceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DeviceRequestDto dto) {
-
+    public ResponseEntity<?> updatePartially(@PathVariable Long id, @RequestBody DeviceRequestDto dto) {
+        this.service.partiallyUpdateDevice(dto, id);
        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DeviceRequestDto dto){
+        this.service.updateDevice(dto, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DeviceResponseDto> fetchSingleDevice(@PathVariable Long id){
+        return ResponseEntity.ok(this.service.fetchSinggleDevice(id));
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<List<DeviceResponseDto>> fetchAllDevices(){
+        return ResponseEntity.ok(this.service.fetchAllDevices());
     }
 
 }

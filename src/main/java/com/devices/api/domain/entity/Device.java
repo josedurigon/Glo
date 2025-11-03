@@ -48,7 +48,7 @@ public class Device {
 
     }
 
-    private void update(String newName, String newBrand, DeviceState newState){
+    public void update(String newName, String newBrand, DeviceState newState){
         if (this.state == DeviceState.IN_USE){
 
             if (!Objects.equals(newName, this.name) || !Objects.equals(newBrand, this.brand)){
@@ -57,11 +57,11 @@ public class Device {
         }
 
 
-        if (this.name != null && !newName.isBlank()){
+        if (newName != null && !newName.isBlank()){
             this.name = newName;
         }
 
-        if (this.brand != null && !newBrand.isBlank()){
+        if (newBrand != null && !newBrand.isBlank()){
             this.brand = newBrand;
         }
 
@@ -69,6 +69,24 @@ public class Device {
             this.state = newState;
     }
 
+    public void partiallyUpdate(String newName, String newBrand){
+        if (this.state == DeviceState.IN_USE){
+
+            if (!Objects.equals(newName, this.name) || !Objects.equals(newBrand, this.brand)){
+                throw new IllegalStateException("You shall not update a device that's already in use.");
+            }
+        }
+
+
+        if (newName != null && !newName.isBlank()){
+            this.name = newName;
+        }
+
+        if (newBrand != null && !newBrand.isBlank()){
+            this.brand = newBrand;
+        }
+
+    }
 
     public void makeSureDeviceCanBeDeleted(){
         if (this.state == DeviceState.IN_USE)
