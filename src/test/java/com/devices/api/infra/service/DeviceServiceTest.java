@@ -30,12 +30,12 @@ class DeviceServiceTest {
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        requestDto = new DeviceRequestDto("iPhone 15", "Apple", "ACTIVE");
+        requestDto = new DeviceRequestDto("iPhone 15", "Apple", "AVAIABLE");
         responseDto = new DeviceResponseDto(
                 1L,
                 "iPhone 15",
                 "Apple",
-                "ACTIVE",
+                "AVAIABLE",
                 LocalDateTime.now()
         );
     }
