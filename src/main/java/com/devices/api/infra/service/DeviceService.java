@@ -45,4 +45,8 @@ public class DeviceService {
     public List<DeviceResponseDto> fetchAllDevices(){
         return this.deviceUseCase.fetchAllDevices();
     }
+
+    public List<DeviceResponseDto> fetchDevicesByBrand(String brand){
+        return this.deviceUseCase.fetchDevicesByBrand(brand);
+    }
 }

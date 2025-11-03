@@ -72,5 +72,12 @@ public class DeviceUseCase {
                 .collect(Collectors.toList());
     }
 
+    public List<DeviceResponseDto> fetchDevicesByBrand(String brand){
+        return this.deviceRepositoryGateway.findByBrand(brand)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
 
 }

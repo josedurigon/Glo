@@ -12,5 +12,6 @@ public interface DeviceRepositoryGateway {
     Device save(Device device); //save can be used both for update and create
     Optional<Device> findById(Long id);
     void delete (Long id);
+    List<Device> findByBrand(String brand);
 
 }

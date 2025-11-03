@@ -48,4 +48,11 @@ public class DeviceController {
         return ResponseEntity.ok(this.service.fetchAllDevices());
     }
 
+    @GetMapping("/fetch/{brand}")
+    public ResponseEntity<List<DeviceResponseDto>> fetchDevicesBrand(@PathVariable String brand){
+        return ResponseEntity.ok(this.service.fetchDevicesByBrand(brand));
+    }
+
+
+
 }

@@ -48,4 +48,13 @@ public class DeviceRepositoryJpaGateway implements DeviceRepositoryGateway {
     public void delete(Long id) {
         deviceRepository.deleteById(id);
     }
+
+    @Override
+    public List<Device> findByBrand(String brand) {
+        return this.deviceRepository.findByBrandIgnoreCase(brand)
+                .stream()
+                .map(mapper::mapFromEntityToDomain)
+                .collect(Collectors.toList());
+
+    }
 }
