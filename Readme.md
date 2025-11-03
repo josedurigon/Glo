@@ -28,7 +28,7 @@ O sistema implementa arquitetura em camadas, separando domínio, aplicação e i
 
 ```bash
 git clone https://github.com/josedurigon/Glo.git
-cd devices-api
+cd glo
 ```
 
 ## Subir com docker compose
