@@ -3,6 +3,7 @@ package com.devices.api.infra.persistence.jpa;
 
 import com.devices.api.domain.enun.DeviceState;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "devices")
 @Data
-@RequiredArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class DeviceEntity {
 
 
