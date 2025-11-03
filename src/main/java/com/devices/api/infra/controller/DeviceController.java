@@ -33,9 +33,8 @@ public class DeviceController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DeviceRequestDto dto){
-        this.service.updateDevice(dto, id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<DeviceResponseDto> update(@PathVariable Long id, @RequestBody DeviceRequestDto dto){
+        return ResponseEntity.ok(this.service.updateDevice(dto, id));
     }
 
     @GetMapping("/{id}")
