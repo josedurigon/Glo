@@ -1,10 +1,14 @@
 package com.devices.api.infra.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import com.devices.api.application.DeviceUseCase;
+
+import com.devices.api.application.exception.UseCaseException;
+import com.devices.api.domain.entity.Device;
 import com.devices.api.domain.enun.DeviceState;
+import com.devices.api.domain.exception.DomainException;
+import com.devices.api.gateway.DeviceRepositoryGateway;
 import com.devices.api.infra.dto.DeviceRequestDto;
 import com.devices.api.infra.dto.DeviceResponseDto;
+import com.devices.api.infra.mapper.DeviceMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,139 +16,162 @@ import org.mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
 class DeviceServiceTest {
 
     @Mock
-    private DeviceUseCase deviceUseCase;
+    private DeviceMapper mapper;
+    @Mock
+    private DeviceRepositoryGateway repository;
 
     @InjectMocks
-    private DeviceService deviceService;
+    private DeviceService service;
 
-    private DeviceRequestDto requestDto;
-    private DeviceResponseDto responseDto;
+    private Device device;
+    private DeviceRequestDto request;
+    private DeviceResponseDto response;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-        requestDto = new DeviceRequestDto("iPhone 15", "Apple", "AVAIABLE");
-        responseDto = new DeviceResponseDto(
-                1L,
-                "iPhone 15",
-                "Apple",
-                "AVAIABLE",
-                LocalDateTime.now()
-        );
+        device = new Device(1L, "iPhone 15", "Apple", DeviceState.AVAIABLE, LocalDateTime.now());
+        request = new DeviceRequestDto("iPhone 15", "Apple", "AVAIABLE");
+        response = new DeviceResponseDto(1L, "iPhone 15", "Apple", "AVAIABLE", LocalDateTime.now());
     }
 
     @Test
     void shouldCreateDeviceSuccessfully() {
-        when(deviceUseCase.create(requestDto)).thenReturn(responseDto);
+        when(mapper.toDomain(request)).thenReturn(device);
+        when(repository.save(device)).thenReturn(device);
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        DeviceResponseDto result = deviceService.create(requestDto);
+        DeviceResponseDto result = service.create(request);
 
-        assertEquals(responseDto, result);
-        verify(deviceUseCase, times(1)).create(requestDto);
+        assertEquals(response, result);
+        verify(mapper).toDomain(request);
+        verify(repository).save(device);
+        verify(mapper).toResponse(device);
     }
 
     @Test
     void shouldPartiallyUpdateDeviceSuccessfully() {
-        long id = 1L;
-        when(deviceUseCase.partiallyUpdateDevice(requestDto, id)).thenReturn(responseDto);
+        when(repository.findById(1L)).thenReturn(Optional.of(device));
+        when(repository.save(device)).thenReturn(device);
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        DeviceResponseDto result = deviceService.partiallyUpdateDevice(requestDto, id);
+        DeviceResponseDto result = service.partiallyUpdateDevice(request, 1L);
 
-        assertEquals(responseDto, result);
-        verify(deviceUseCase, times(1)).partiallyUpdateDevice(requestDto, id);
+        assertEquals(response, result);
+        verify(repository).findById(1L);
+        verify(repository).save(device);
     }
 
     @Test
-    void shouldThrowWhenPartiallyUpdateWithInvalidId() {
-        assertThrows(IllegalStateException.class,
-                () -> deviceService.partiallyUpdateDevice(requestDto, 0));
-        verifyNoInteractions(deviceUseCase);
+    void shouldThrowWhenPartiallyUpdateDeviceNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> service.partiallyUpdateDevice(request, 1L));
+    }
+
+    @Test
+    void shouldThrowWhenInvalidStateInUpdateDevice() {
+        DeviceRequestDto invalid = new DeviceRequestDto("iPhone", "Apple", "INVALID");
+        when(repository.findById(1L)).thenReturn(Optional.of(device));
+        assertThrows(UseCaseException.class, () -> service.updateDevice(invalid, 1L));
     }
 
     @Test
     void shouldUpdateDeviceSuccessfully() {
-        long id = 2L;
-        when(deviceUseCase.updateDevice(requestDto, id)).thenReturn(responseDto);
+        when(repository.findById(1L)).thenReturn(Optional.of(device));
+        when(repository.save(device)).thenReturn(device);
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        DeviceResponseDto result = deviceService.updateDevice(requestDto, id);
+        DeviceResponseDto result = service.updateDevice(request, 1L);
 
-        assertEquals(responseDto, result);
-        verify(deviceUseCase, times(1)).updateDevice(requestDto, id);
+        assertEquals(response, result);
+        verify(repository).save(device);
+        verify(mapper).toResponse(device);
     }
 
     @Test
-    void shouldThrowWhenUpdateWithInvalidId() {
-        assertThrows(IllegalArgumentException.class,
-                () -> deviceService.updateDevice(requestDto, 0));
-        verifyNoInteractions(deviceUseCase);
+    void shouldFetchSingleDeviceSuccessfully() {
+        when(repository.findById(1L)).thenReturn(Optional.of(device));
+        when(mapper.toResponse(device)).thenReturn(response);
+
+        DeviceResponseDto result = service.fetchSingleDevice(1L);
+
+        assertEquals(response, result);
+        verify(repository).findById(1L);
     }
 
     @Test
-    void shouldFetchSingleDevice() {
-        Long id = 1L;
-        when(deviceUseCase.fetchSingleDeviceById(id)).thenReturn(responseDto);
-
-        DeviceResponseDto result = deviceService.fetchSinggleDevice(id);
-
-        assertEquals(responseDto, result);
-        verify(deviceUseCase, times(1)).fetchSingleDeviceById(id);
+    void shouldThrowWhenDeviceNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(UseCaseException.class, () -> service.fetchSingleDevice(1L));
     }
 
     @Test
     void shouldFetchAllDevices() {
-        List<DeviceResponseDto> devices = List.of(responseDto);
-        when(deviceUseCase.fetchAllDevices()).thenReturn(devices);
+        when(repository.findAll()).thenReturn(List.of(device));
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        List<DeviceResponseDto> result = deviceService.fetchAllDevices();
+        List<DeviceResponseDto> result = service.fetchAllDevices();
 
         assertEquals(1, result.size());
-        verify(deviceUseCase, times(1)).fetchAllDevices();
+        verify(repository).findAll();
     }
 
     @Test
     void shouldFetchDevicesByBrand() {
-        String brand = "Apple";
-        List<DeviceResponseDto> devices = List.of(responseDto);
-        when(deviceUseCase.fetchDevicesByBrand(brand)).thenReturn(devices);
+        when(repository.findByBrand("Apple")).thenReturn(List.of(device));
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        List<DeviceResponseDto> result = deviceService.fetchDevicesByBrand(brand);
+        List<DeviceResponseDto> result = service.fetchDevicesByBrand("Apple");
 
-        assertEquals(devices, result);
-        verify(deviceUseCase, times(1)).fetchDevicesByBrand(brand);
+        assertEquals(1, result.size());
+        verify(repository).findByBrand("Apple");
     }
 
     @Test
-    void shouldFetchDevicesByValidState() {
-        String state = "AVAIABLE";
-        List<DeviceResponseDto> devices = List.of(responseDto);
-        when(deviceUseCase.fetchDevicesByState(DeviceState.AVAIABLE)).thenReturn(devices);
+    void shouldFetchDevicesByState() {
+        when(repository.findByState(DeviceState.AVAIABLE)).thenReturn(List.of(device));
+        when(mapper.toResponse(device)).thenReturn(response);
 
-        List<DeviceResponseDto> result = deviceService.fetchDevicesByState(state);
+        List<DeviceResponseDto> result = service.fetchDevicesByState("AVAIABLE");
 
-        assertEquals(devices, result);
-        verify(deviceUseCase, times(1)).fetchDevicesByState(DeviceState.AVAIABLE);
+        assertEquals(1, result.size());
+        verify(repository).findByState(DeviceState.AVAIABLE);
     }
 
     @Test
-    void shouldThrowWhenFetchDevicesByInvalidState() {
-        assertThrows(IllegalArgumentException.class,
-                () -> deviceService.fetchDevicesByState("INVALID_STATE"));
-        verifyNoInteractions(deviceUseCase);
+    void shouldThrowWhenInvalidStateInFetchDevicesByState() {
+        assertThrows(UseCaseException.class, () -> service.fetchDevicesByState("INVALID_STATE"));
     }
 
     @Test
     void shouldDeleteDeviceById() {
-        Long id = 1L;
+        when(repository.findById(1L)).thenReturn(Optional.of(device));
+        doNothing().when(repository).delete(device.getId());
 
-        deviceService.deleteDeviceById(id);
+        service.deleteDeviceById(1L);
 
-        verify(deviceUseCase, times(1)).deleteDevice(id);
+        verify(repository).delete(1L);
+    }
+
+    @Test
+    void shouldThrowWhenDeleteDeviceNotFound() {
+        when(repository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> service.deleteDeviceById(1L));
+    }
+
+    @Test
+    void shouldPropagateDomainExceptionWhenDeleting() {
+        Device deviceInUse = mock(Device.class);
+        when(repository.findById(1L)).thenReturn(Optional.of(deviceInUse));
+        doThrow(new DomainException("Device in use")).when(deviceInUse).makeSureDeviceCanBeDeleted();
+
+        assertThrows(DomainException.class, () -> service.deleteDeviceById(1L));
     }
 }

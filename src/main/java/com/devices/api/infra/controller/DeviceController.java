@@ -39,7 +39,7 @@ public class DeviceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DeviceResponseDto> fetchSingleDevice(@PathVariable Long id){
-        return ResponseEntity.ok(this.service.fetchSinggleDevice(id));
+        return ResponseEntity.ok(this.service.fetchSingleDevice(id));
     }
 
     @GetMapping("/findAll")

@@ -1,6 +1,8 @@
 package com.devices.api.domain.entity;
 
 import com.devices.api.domain.enun.DeviceState;
+import com.devices.api.domain.exception.DomainException;
+import com.devices.api.infra.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -34,16 +36,16 @@ public class Device {
     private void validate(String name, String brand, DeviceState state, LocalDateTime creationTime) {
 
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Device name cannot be empty.");
+            throw new ValidationException("Device name cannot be empty.");
         }
         if (brand == null || brand.isBlank()) {
-            throw new IllegalArgumentException("Device brand cannot be empty.");
+            throw new ValidationException("Device brand cannot be empty.");
         }
         if (state == null) {
-            throw new IllegalArgumentException("Device state cannot be null.");
+            throw new ValidationException("Device state cannot be null.");
         }
         if (creationTime == null) {
-            throw new IllegalArgumentException("Creation time cannot be null.");
+            throw new ValidationException("Creation time cannot be null.");
         }
 
     }
@@ -52,7 +54,7 @@ public class Device {
         if (this.state == DeviceState.IN_USE){
 
             if (!Objects.equals(newName, this.name) || !Objects.equals(newBrand, this.brand)){
-                throw new IllegalStateException("You shall not update a device that's already in use.");
+                throw new DomainException("You shall not update a device that's already in use.");
             }
         }
 
@@ -73,7 +75,7 @@ public class Device {
         if (this.state == DeviceState.IN_USE){
 
             if (!Objects.equals(newName, this.name) || !Objects.equals(newBrand, this.brand)){
-                throw new IllegalStateException("You shall not update a device that's already in use.");
+                throw new DomainException("You shall not update a device that's already in use.");
             }
         }
 
@@ -90,7 +92,7 @@ public class Device {
 
     public void makeSureDeviceCanBeDeleted(){
         if (this.state == DeviceState.IN_USE)
-            throw new IllegalStateException("Device will not be deleted because it's currently in use!");
+            throw new DomainException("Device will not be deleted because it's currently in use!");
     }
 
 
