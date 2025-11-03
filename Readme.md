@@ -26,6 +26,36 @@ O sistema implementa arquitetura em camadas, separando domínio, aplicação e i
 
 ## Como Executar Localmente
 
+```bash
+git clone https://github.com/josedurigon/Glo.git
+cd devices-api
+```
+
+## Subir com docker compose
+
+````bash
+docker compose up -d
+````
+
+## Executar com maven
+
+
+````bash
+mvn spring-boot:run
+````
+
+## Documentação swagger
+
+http://localhost:8080/swagger-ui.html
+
+
+## Rodagem de testes unitarios
+
+````bash
+mvn test
+````
+
+
 
 
 
