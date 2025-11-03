@@ -2,6 +2,7 @@ package com.devices.api.infra.service;
 
 import com.devices.api.application.DeviceUseCase;
 import com.devices.api.domain.entity.Device;
+import com.devices.api.domain.enun.DeviceState;
 import com.devices.api.infra.dto.DeviceRequestDto;
 import com.devices.api.infra.dto.DeviceResponseDto;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,6 @@ public class DeviceService {
         if(id == 0)
             throw new IllegalStateException("Invalid device ID.");
 
-
-
         return this.deviceUseCase.partiallyUpdateDevice(dto,id);
     }
 
@@ -48,5 +47,16 @@ public class DeviceService {
 
     public List<DeviceResponseDto> fetchDevicesByBrand(String brand){
         return this.deviceUseCase.fetchDevicesByBrand(brand);
+    }
+
+    public List<DeviceResponseDto> fetchDevicesByState(String stateString){
+        DeviceState state = null;
+        try {
+            state = DeviceState.valueOf(stateString.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid device state: " + stateString);
+        }
+        return this.deviceUseCase.fetchDevicesByState(state);
+
     }
 }

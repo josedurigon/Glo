@@ -1,6 +1,7 @@
 package com.devices.api.infra.persistence.jpa;
 
 import com.devices.api.domain.entity.Device;
+import com.devices.api.domain.enun.DeviceState;
 import com.devices.api.gateway.DeviceRepositoryGateway;
 import com.devices.api.infra.mapper.DeviceMapper;
 import org.springframework.stereotype.Repository;
@@ -56,5 +57,13 @@ public class DeviceRepositoryJpaGateway implements DeviceRepositoryGateway {
                 .map(mapper::mapFromEntityToDomain)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<Device> findByState(DeviceState state) {
+        return this.deviceRepository.findByState(state)
+                .stream()
+                .map(mapper::mapFromEntityToDomain)
+                .collect(Collectors.toList());
     }
 }

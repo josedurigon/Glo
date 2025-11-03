@@ -79,5 +79,11 @@ public class DeviceUseCase {
                 .collect(Collectors.toList());
     }
 
+    public List<DeviceResponseDto> fetchDevicesByState(DeviceState state){
+        return this.deviceRepositoryGateway.findByState(state)
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
 }

@@ -13,5 +13,6 @@ public interface DeviceRepositoryGateway {
     Optional<Device> findById(Long id);
     void delete (Long id);
     List<Device> findByBrand(String brand);
+    List<Device> findByState(DeviceState state);
 
 }

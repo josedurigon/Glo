@@ -53,6 +53,10 @@ public class DeviceController {
         return ResponseEntity.ok(this.service.fetchDevicesByBrand(brand));
     }
 
+    @GetMapping("/fetch/state/{state}")
+    public ResponseEntity<List<DeviceResponseDto>> fetchByDeviceState(@PathVariable String state){
+        return ResponseEntity.ok(this.service.fetchDevicesByState(state));
+    }
 
 
 }
