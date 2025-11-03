@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Device {
-    private long id;
+    private Long id;
     private String name;
     private String brand;
     private DeviceState state;
     private final LocalDateTime creationTime;
 
 
-    public Device(String name, String brand, LocalDateTime creationTime) {
+    public Device(String name, String brand) {
         this.name = name;
         this.brand = brand;
         this.state = DeviceState.AVAIABLE;
@@ -76,12 +76,8 @@ public class Device {
     }
 
 
-    public long getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
