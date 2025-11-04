@@ -20,9 +20,10 @@ services:
     container_name: postgres-db
     restart: always
     environment:
-      POSTGRES_DB: device_db
+      POSTGRES_DB: devices_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
+
     ports:
       - "5432:5432"
     volumes:
